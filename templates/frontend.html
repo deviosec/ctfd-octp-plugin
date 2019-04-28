@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% include 'octp-menu.html' %}
+
+	<div class="container">
+        <h2>Frontend Information</h2>
+        This page is intended for novice users, who do not have their own kali box, or generally hacking tools installed on their own laptop.
+        Here each user can claim a frontend which will be a preconfigured Kali Linux box, which will have all the tools needed to complete the challenges (or they can be installed if not).
+        But keep in mind, this might be slow and slugish because it is a remote machine, where the latency might be high!
+        But if that is not a problem for you, then go ahead! Use our frontends!
+        {% if not frontend.frontendId %}
+            You have not claimed a frontend yet, click here to get a frontend!<br/>
+            <a href='#' id='claimFrontend'>Claim Frontend</a>!
+        {% else %}
+            Your frontend is located at: <b>{{ frontend.frontendIp }}</b>, congrats! <br/>
+            You can connect to it using <b>vnc://{{ frontend.frontendIp }}</b>, or click
+            this link to connect using the browser, 
+            <a target="_blank" href="/octp/novnc?host={{ frontend.frontendIp }}&port=5900">connect using your browser</a>.
+        {% endif %}
+	</div>
+{% endblock %}
+

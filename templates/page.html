@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if title %}
+    <!-- <div class="jumbotron"> -->
+    <!--     <div class="container"> -->
+    <!--         <h1>{{ title }}</h1> -->
+    <!--     </div> -->
+    <!-- </div> -->
+    {% endif %}
+    {% include 'octp-menu.html' %}
+
+	<div class="container">
+        {{ content | safe }}
+	</div>
+{% endblock %}

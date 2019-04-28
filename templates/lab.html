@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% include 'octp-menu.html' %}
+
+	<div class="container">
+        <h2>Lab Information</h2>
+        {% if not lab.labId %}
+            You have not claimed a lab yet, click here to get a lab!<br/>
+            <a href='#' id='claimLab'>Claim Lab</a>!
+        {% else %}
+            Your lab is located at: <b>{{ lab.labIp }}</b>, congrats!
+        {% endif %}
+	</div>
+{% endblock %}
+
