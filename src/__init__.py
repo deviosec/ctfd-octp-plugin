@@ -178,7 +178,7 @@ class ctfdoctp(object):
         content = subtitle
 
         user = get_current_user()
-        rec = OctpModel.query.filter_by(user=user.id).first()
+        rec = OctpRelations.query.filter_by(user=user.id).first()
 
         return render_template('octp-lab.html', lab=rec)
 
@@ -188,7 +188,7 @@ class ctfdoctp(object):
         content = subtitle
 
         user = get_current_user()
-        rec = OctpModel.query.filter_by(user=user.id).first()
+        rec = OctpRelations.query.filter_by(user=user.id).first()
         print(rec)
 
         return render_template('octp-frontend.html', frontend=rec)
@@ -196,7 +196,7 @@ class ctfdoctp(object):
     @octp_require_auth
     def getClaimLab(self):
         user = get_current_user()
-        rec = OctpModel.query.filter_by(user=user.id).first()
+        rec = OctpRelations.query.filter_by(user=user.id).first()
 
         if rec and (rec.labId != "" and rec.labIp != ""):
             return json.dumps({"error": "You already have a lab assigned to you!"})
@@ -210,9 +210,9 @@ class ctfdoctp(object):
             print(str(e))
             return json.dumps({"error": "Internal server error"})
 
-        # add it to our octpmodel database!
+        # add it to our OctpRelations database!
         if not rec:
-            rec = OctpModel(user.id, lab.id, lab.ip, "", "")
+            rec = OctpRelations(user.id, lab.id, lab.ip, "", "")
             db.session.add(rec)
         else:
             rec.labId = lab.id
@@ -225,7 +225,7 @@ class ctfdoctp(object):
     @octp_require_auth
     def getClaimFrontend(self):
         user = get_current_user()
-        rec = OctpModel.query.filter_by(user=user.id).first()
+        rec = OctpRelations.query.filter_by(user=user.id).first()
 
         if rec and (rec.frontendId != "" and rec.frontendIp != ""):
             return json.dumps({"error": "You already have a frontend assigned to you!"})
@@ -241,7 +241,7 @@ class ctfdoctp(object):
         print(front)
 
         if not rec:
-            rec = OctpModel(user.id, "", "", front.id, front.ip)
+            rec = OctpRelations(user.id, "", "", front.id, front.ip)
             db.session.add(rec)
         else:
             rec.frontendId = front.id
@@ -253,22 +253,6 @@ class ctfdoctp(object):
 
 # lets have a table to hold our data
 class OctpRelations(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # team = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    labId = db.Column(db.Text)
-    labIp = db.Column(db.Text)
-    frontendId = db.Column(db.Text)
-    frontendIp = db.Column(db.Text)
-
-    def __init__(self, user, labId, labIp, frontendId, frontendIp):
-        self.user = user
-        self.labId = labId
-        self.labIp = labIp
-        self.frontendId = frontendId
-        self.frontendIp = frontendIp
-
-class OctpRelations2(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, db.ForeignKey('users.id'))
     # team = db.Column(db.Integer, db.ForeignKey('teams.id'))
