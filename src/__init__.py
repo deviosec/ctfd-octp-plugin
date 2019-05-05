@@ -79,10 +79,6 @@ class ctfdoctp(object):
         # make our default config, if needed
         self.initialConfig()
 
-        set_config("octp_enable", True)
-        set_config("octp_show_frontends", False)
-        set_config("octp_show_intercept", False)
-        set_config("octp_url", "http://127.0.0.1:8000/")
         if not get_config("octp_enable"):
             return
 
@@ -142,16 +138,19 @@ class ctfdoctp(object):
 
     # creates our default configuration, which decides what we sill display, etc.
     def initialConfig(self):
-        if not get_config("octp_enable"):
-            set_config("octp_enable", os.environ.get("OCTP_ENABLE", True))
-        if not get_config("octp_url"):
-            set_config("octp_url", os.environ.get("OCTP_URL", ""))
-        if not get_config("octp_show_labs"):
-            set_config("octp_show_labs", os.environ.get("OCTP_SHOW_LABS", True))
-        if not get_config("octp_show_frontends"):
-            set_config("octp_show_frontends", os.environ.get("OCTP_SHOW_FRONTENDS", True))
-        if not get_config("octp_show_intercept"):
-            set_config("octp_show_intercept", os.environ.get("OCTP_SHOW_intercept", True))
+        # this will setup our config, so if the config is not set (None)
+        # or we have a environment variable that is set, it will set it 
+        # to that of our envronment variable (if set), else use default value
+        if not get_config("octp_enable") or os.getenv("OCTP_ENABLE"):
+            set_config("octp_enable", os.getenv("OCTP_ENABLE", True))
+        if not get_config("octp_url") or os.getenv("OCTP_URL"):
+            set_config("octp_url", os.getenv("OCTP_URL", ""))
+        if not get_config("octp_show_labs") or os.getenv("OCTP_SHOW_LABS"):
+            set_config("octp_show_labs", os.getenv("OCTP_SHOW_LABS", True))
+        if not get_config("octp_show_frontends") or os.getenv("OCTP_SHOW_FRONTENDS"):
+            set_config("octp_show_frontends", os.getenv("OCTP_SHOW_FRONTENDS", True))
+        if not get_config("octp_show_intercept") or os.getenv("OCTP_SHOW_INTERCEPT"):
+            set_config("octp_show_intercept", os.getenv("OCTP_SHOW_INTERCEPT", True))
 
 
     def noVnc(self):
