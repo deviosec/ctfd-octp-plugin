@@ -93,7 +93,10 @@ class ctfdoctp(object):
 
         # find our plugin path!
         self.fullPath = os.path.dirname(os.path.realpath(__file__))+"/"
-        self.partialPath = "/plugins/test_plugin/"
+        # get our plugin path name (/plugins/octp/)
+        pluginPath = os.path.dirname(__file__)
+        splitPluginPath = pluginPath.split("/")
+        self.partialPath = "/"+splitPluginPath[-1:][0]+"/"+splitPluginPath[-2:][0]+"/"
 
         # add our template overrides
         self.addTemplate('octp-menu.html',       'menu.html')
