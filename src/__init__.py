@@ -92,7 +92,7 @@ class ctfdoctp(object):
         # get our plugin path name (/plugins/octp/)
         pluginPath = os.path.dirname(__file__)
         splitPluginPath = pluginPath.split("/")
-        self.partialPath = "/"+splitPluginPath[-1:][0]+"/"+splitPluginPath[-2:][0]+"/"
+        self.partialPath = "/"+splitPluginPath[-2:][0]+"/"+splitPluginPath[-1:][0]+"/"
 
         # add our template overrides
         self.addTemplate('octp-menu.html',       'menu.html')
@@ -100,6 +100,7 @@ class ctfdoctp(object):
         self.addTemplate('octp-labcentral.html', 'labcentral.html')
         self.addTemplate('octp-lab.html',        'lab.html')
         self.addTemplate('octp-frontend.html',   'frontend.html')
+        self.addTemplate('octp-intercept.html',   'intercept.html')
         self.addTemplate('octp-admin-settings.html',   'admin/index.html')
         self.addTemplate('octp-admin-incl-settings.html',   'admin/settings.html')
 
@@ -125,15 +126,15 @@ class ctfdoctp(object):
         app.add_url_rule("/octp/labcentral", methods=['GET'], view_func=self.labCentral)
         app.add_url_rule("/octp/admin/settings", methods=['GET'], view_func=self.adminSettings)
 
-        if get_config("octp_show_labs"):
+        if get_config("octp_enable_labs"):
             app.add_url_rule("/octp/labinfo", methods=['GET'], view_func=self.getLabInformtion)
             app.add_url_rule("/octp/claimlab", methods=['GET'], view_func=self.getClaimLab)
 
-        if get_config("octp_show_frontends"):
+        if get_config("octp_enable_frontends"):
             app.add_url_rule("/octp/frontendinfo", methods=['GET'], view_func=self.getFrontendInformation)
             app.add_url_rule("/octp/claimfrontend", methods=['GET'], view_func=self.getClaimFrontend)
 
-        if get_config("octp_show_intercept"):
+        if get_config("octp_enable_intercept"):
             app.add_url_rule("/octp/interceptinfo", methods=['GET'], view_func=self.getInterceptInformation)
 
     # creates our default configuration, which decides what we sill display, etc.
@@ -145,12 +146,12 @@ class ctfdoctp(object):
             set_config("octp_enable", os.getenv("OCTP_ENABLE", True))
         if not get_config("octp_url") or os.getenv("OCTP_URL"):
             set_config("octp_url", os.getenv("OCTP_URL", ""))
-        if not get_config("octp_show_labs") or os.getenv("OCTP_SHOW_LABS"):
-            set_config("octp_show_labs", os.getenv("OCTP_SHOW_LABS", True))
-        if not get_config("octp_show_frontends") or os.getenv("OCTP_SHOW_FRONTENDS"):
-            set_config("octp_show_frontends", os.getenv("OCTP_SHOW_FRONTENDS", True))
-        if not get_config("octp_show_intercept") or os.getenv("OCTP_SHOW_INTERCEPT"):
-            set_config("octp_show_intercept", os.getenv("OCTP_SHOW_INTERCEPT", True))
+        if not get_config("octp_enable_labs") or os.getenv("OCTP_ENABLE_LABS"):
+            set_config("octp_enable_labs", os.getenv("OCTP_enable_LABS", True))
+        if not get_config("octp_enable_frontends") or os.getenv("OCTP_ENABLE_FRONTENDS"):
+            set_config("octp_enable_frontends", os.getenv("OCTP_enable_FRONTENDS", True))
+        if not get_config("octp_enable_intercept") or os.getenv("OCTP_ENABLE_INTERCEPT"):
+            set_config("octp_enable_intercept", os.getenv("OCTP_enable_INTERCEPT", True))
 
 
     def noVnc(self):
