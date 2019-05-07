@@ -204,7 +204,6 @@ class ctfdoctp(object):
         try:
             lab = self.octp_api.claim_agent(user.name, user.email)
         except octp.exceptions.ServerError as e:
-            print("server error!")
             return json.dumps({"error": str(e)})
         except octp.exceptions.InternalServerError as e:
             print(str(e))
@@ -237,15 +236,14 @@ class ctfdoctp(object):
         except octp.exceptions.InternalServerError as e:
             print(str(e))
             return json.dumps({"error": "Internal server error"})
-        print("--")
-        print(front)
 
         if not rec:
-            rec = OctpRelations(user.id, "", "", front.id, front.ip)
+            rec = OctpRelations(user.id, "", "", front.id, front.ip, front.password)
             db.session.add(rec)
         else:
             rec.frontendId = front.id
             rec.frontendIp = front.ip
+            rec.frontendPassword = front.password
 
         db.session.commit()
 
@@ -260,13 +258,15 @@ class OctpRelations(db.Model):
     labIp = db.Column(db.Text)
     frontendId = db.Column(db.Text)
     frontendIp = db.Column(db.Text)
+    frontendPassword = db.Column(db.Text)
 
-    def __init__(self, user, labId, labIp, frontendId, frontendIp):
+    def __init__(self, user, labId, labIp, frontendId, frontendIp, frontendPassword):
         self.user = user
         self.labId = labId
         self.labIp = labIp
         self.frontendId = frontendId
         self.frontendIp = frontendIp
+        self.frontendPassword = frontendPassword
 
 def load(app):
     x = ctfdoctp(app)
