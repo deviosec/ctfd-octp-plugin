@@ -149,9 +149,9 @@ class ctfdoctp(object):
         if not get_config("octp_enable_labs") or os.getenv("OCTP_ENABLE_LABS"):
             set_config("octp_enable_labs", os.getenv("OCTP_ENABLE_LABS", True))
         if not get_config("octp_enable_frontends") or os.getenv("OCTP_ENABLE_FRONTENDS"):
-            set_config("octp_enable_frontends", os.getenv("OCTP_ENABLE_FRONTENDS", True))
+            set_config("octp_enable_frontends", os.getenv("OCTP_ENABLE_FRONTENDS", False))
         if not get_config("octp_enable_intercept") or os.getenv("OCTP_ENABLE_INTERCEPT"):
-            set_config("octp_enable_intercept", os.getenv("OCTP_ENABLE_INTERCEPT", True))
+            set_config("octp_enable_intercept", os.getenv("OCTP_ENABLE_INTERCEPT", False))
 
 
     def noVnc(self):
