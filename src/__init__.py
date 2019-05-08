@@ -137,6 +137,46 @@ class ctfdoctp(object):
         if get_config("octp_enable_intercept"):
             app.add_url_rule("/octp/interceptinfo", methods=['GET'], view_func=self.getInterceptInformation)
 
+        self.app.after_request(self.hook_response)
+
+    def hook_response(self, response):
+        if not "/api/v1/challenges/<challenge_id>" == str(request.url_rule):
+            return response
+
+        if "##SERVERIP##" not in response.data:
+            return response
+
+        # if not authed():
+        #     return response
+        serverIp = "N/A"
+        claimLabMsg = True
+        if authed():
+            user = get_current_user()
+            rec = OctpRelations.query.filter_by(user=user.id).first()
+            if rec and not rec.labIp == "":
+                serverIp = rec.labIp
+                claimLabMsg = False
+
+        # get our response as json
+        resJson = response.get_json()
+
+        # replace our serverip with our lab ip!
+        resJson["data"]["description"] = resJson["data"]["description"].replace("##SERVERIP##", serverIp)
+
+        # if the user is not logged in, or has no lab, then add a info saying
+        # to sign in, and get a lab
+        if claimLabMsg:
+            msg = '\n\n'
+            msg += 'You have either not logged in yet or have not claimed a lab.\n'
+            msg += 'Please visit <a href="/octp/labinfo" target="_blank">Lab Information</a> to claim a lab.\n'
+            msg += 'After doing this, a nicely formatted server IP should appear!'
+            resJson["data"]["description"] += msg
+
+
+        # set our data to what we just modified in our json and return
+        response.data = json.dumps(resJson)
+        return response
+
     # creates our default configuration, which decides what we sill display, etc.
     def initialConfig(self):
         # this will setup our config, so if the config is not set (None)
@@ -211,7 +251,7 @@ class ctfdoctp(object):
 
         # add it to our OctpRelations database!
         if not rec:
-            rec = OctpRelations(user.id, lab.id, lab.ip, "", "")
+            rec = OctpRelations(user.id, lab.id, lab.ip, "", "", "")
             db.session.add(rec)
         else:
             rec.labId = lab.id
